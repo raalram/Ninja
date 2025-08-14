@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8dd17d5a193d414d85f5f128b607708, type: 3}
+  m_Name: ItemPocionMana
+  m_EditorClassIdentifier: 
+  ID: PocionMana
+  Nombre: Pocion de Mana
+  Icono: {fileID: 21300000, guid: e304afb5722c23c4c9e98e6d05406826, type: 3}
+  Descripcion: "Una poci\xF3n especial que restaura 20 puntos de man\xE1"
+  Tipo: 1
+  EsConsumible: 1
+  EsAcumulable: 1
+  AcumulacionMax: 50
+  Cantidad: 0
+  MPrestauracion: 20
