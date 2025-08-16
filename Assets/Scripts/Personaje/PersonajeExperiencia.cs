@@ -13,7 +13,6 @@ public class PersonajeExperiencia : MonoBehaviour
     [SerializeField] private int valorIncremental;
 
     private float expActual;
-    private float expActualTemp;
     private float expRequeridaSiguienteNivel;
     
     private void Start()
@@ -29,34 +28,28 @@ public class PersonajeExperiencia : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.X))
         {
-            AñadirExperiencia(10f);
+            AñadirExperiencia(2f);
         }
     }
 
     public void AñadirExperiencia(float expObtenida)
     {
-        if(expObtenida >0f) 
+        if (expObtenida <= 0) return;
+        expActual += expObtenida;
+        stats.ExpActual = expActual;
+
+        if (expActual == expRequeridaSiguienteNivel)
         {
-            float expRestanteNuevoNivel=expRequeridaSiguienteNivel-expActualTemp;
-            if(expObtenida>=expRestanteNuevoNivel)
-            {
-                expObtenida-=expRestanteNuevoNivel; 
-                expActual += expObtenida;
-                ActualizarNivel();
-                AñadirExperiencia(expObtenida);
-            }
-            else
-            {
-                expActual += expObtenida;
-                expActualTemp += expObtenida;
-                if(expActualTemp==expRequeridaSiguienteNivel)
-                {
-                    ActualizarNivel();
-                }
-            }
+            ActualizarNivel();
+        }
+        else if (expActual > expRequeridaSiguienteNivel)
+        {
+            float dif = expActual - expRequeridaSiguienteNivel;
+            ActualizarNivel();
+            AñadirExperiencia(dif);
         }
 
-        stats.ExpActual = expActual;
+        stats.ExpTotal += expObtenida;
         ActualizarBarraExp();
     }
 
@@ -65,7 +58,8 @@ public class PersonajeExperiencia : MonoBehaviour
         if(stats.Nivel< nivelMax )
         {
             stats.Nivel++;
-            expActualTemp = 0f;
+            stats.ExpActual = 0;
+            expActual = 0;
             expRequeridaSiguienteNivel += valorIncremental;
             stats.ExpRequeridaSiguienteNivel = expRequeridaSiguienteNivel;
             stats.PuntosDisponibles += 3;
@@ -74,7 +68,7 @@ public class PersonajeExperiencia : MonoBehaviour
     }
     private void ActualizarBarraExp()
     {
-        UIManager.Instance.ActualizarExpPersonaje(expActualTemp, expRequeridaSiguienteNivel);
+        UIManager.Instance.ActualizarExpPersonaje(expActual, expRequeridaSiguienteNivel);
     }
     private void RespuestaEnemigoDerrotado(float exp)
     {

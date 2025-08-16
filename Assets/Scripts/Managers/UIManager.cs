@@ -10,6 +10,8 @@ public class UIManager : Singleton<UIManager>
     [Header("Paneles")]
     [SerializeField] private GameObject panelStats;
     [SerializeField] private GameObject panelTienda;
+    [SerializeField] private GameObject panelCrafting;
+    [SerializeField] private GameObject panelCraftingInfo;
     [SerializeField] private GameObject panelInventario;
     [SerializeField] private GameObject panelInspectorQuests;
     [SerializeField] private GameObject panelPersonajeQuests;
@@ -35,6 +37,7 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private TextMeshProUGUI statNivelTMP;
     [SerializeField] private TextMeshProUGUI statExpTMP;
     [SerializeField] private TextMeshProUGUI statExpRequeridaTMP;
+    [SerializeField] private TextMeshProUGUI statExpTotalTMP;
     [SerializeField] private TextMeshProUGUI atributoFuerzaTMP;
     [SerializeField] private TextMeshProUGUI atributoInteligenciaTMP;
     [SerializeField] private TextMeshProUGUI atributoDestrezaTMP;
@@ -86,6 +89,7 @@ public class UIManager : Singleton<UIManager>
         statNivelTMP.text=stats.Nivel.ToString();
         statExpTMP.text=stats.ExpActual.ToString();
         statExpRequeridaTMP.text=stats.ExpRequeridaSiguienteNivel.ToString();
+        statExpTotalTMP.text = stats.ExpTotal.ToString();
 
         atributoFuerzaTMP.text=stats.Fuerza.ToString();
         atributoInteligenciaTMP.text=stats.Inteligencia.ToString();
@@ -118,6 +122,19 @@ public class UIManager : Singleton<UIManager>
     {
         panelTienda.SetActive(!panelTienda.activeSelf);
     }
+    public void AbriPanelCrafting()
+    {
+        panelCrafting.SetActive(true);
+    }
+    public void CerrarPanelCrafting()
+    {
+        panelCrafting.SetActive(false);
+        AbrirCerrarPanelCraftingInformacion(false);
+    }
+    public void AbrirCerrarPanelCraftingInformacion(bool estado)
+    {
+        panelCraftingInfo.SetActive(estado);
+    }
     public void AbrirCrerarPanelInventario()
     {
         panelInventario.SetActive(!panelInventario.activeSelf);
@@ -143,7 +160,8 @@ public class UIManager : Singleton<UIManager>
                 AbrirCerrarPanelTienda();
                 break;
             case InteraccionExtraNPC.Crafting:
-            break;
+                AbriPanelCrafting();
+                break;
         }
     }
 

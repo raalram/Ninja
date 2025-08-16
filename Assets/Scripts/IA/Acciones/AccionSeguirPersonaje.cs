@@ -16,6 +16,10 @@ public class AccionSeguirPersonaje : IAAccion
         {
             return;
         }
+        if (controller.PersonajeReferencia.GetComponent<PersonajeVida>().Derrotado)
+        {
+            return;
+        }
 
         Vector3 dirHaciaPersonaje=controller.PersonajeReferencia.position-controller.transform.position;
         Vector3 direccion = dirHaciaPersonaje.normalized;

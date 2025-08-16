@@ -8,23 +8,25 @@ public class PersonajeMovimiento : MonoBehaviour
     public bool EnMovimiento => _direccionMovimiento.magnitude > 0f;//si la magnitud del vector es mayor de cero no estamos moviendo
     public Vector2 DireccionMovimiento => _direccionMovimiento;
 
+    private PersonajeVida personajeVida;
     private Rigidbody2D _rigidbody2D;
     private Vector2 _direccionMovimiento;
     private Vector2 _input;
 
     private void Awake()
     {
+        personajeVida = GetComponent<PersonajeVida>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
+        if (personajeVida.Derrotado)
+        {
+            _direccionMovimiento = Vector2.zero;
+            return;
+        }
+
         _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         
         //movimiento en X

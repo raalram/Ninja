@@ -1,4 +1,4 @@
-using System.Collections;
+using BayatGames.SaveGameFree;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,6 +6,7 @@ using UnityEngine;
 public class Inventario : Singleton<Inventario>
 {
     [Header("Items")]
+    [SerializeField] private InventarioAlmacen inventarioAlmacen;
     [SerializeField] private InventarioItem[] itemsInventario;
     [SerializeField] private Personaje personaje;
     [SerializeField] private int numeroDeSlots;
@@ -13,6 +14,9 @@ public class Inventario : Singleton<Inventario>
     public Personaje Personaje => personaje;
     public int NumeroDeSlots=> numeroDeSlots;
     public InventarioItem[] ItemsInventario=>itemsInventario;
+
+    private readonly string INVENTARIO_KEY = "MiJuegoMiInventario105205120";
+
 
     private void Start()
     {
@@ -64,6 +68,8 @@ public class Inventario : Singleton<Inventario>
         {
             AñadirItemEnSlotDisponible(itemPorAñadir, cantidad);
         }
+
+        GuardarInventario();
     }
 
     private List<int> VerificarExistencias(string itemID)
@@ -80,6 +86,28 @@ public class Inventario : Singleton<Inventario>
             }
         }
         return indexesDelItem;
+    }
+    public int ObtenerCantidadDeItems(string itemID)
+    {
+        List<int> indexes = VerificarExistencias(itemID);
+        int cantidadTotal = 0;
+        foreach (int index in indexes)
+        {
+            if (itemsInventario[index].ID == itemID)
+            {
+                cantidadTotal += itemsInventario[index].Cantidad;
+            }
+        }
+
+        return cantidadTotal;
+    }
+    public void ConsumirItem(string itemID)
+    {
+        List<int> indexes = VerificarExistencias(itemID);
+        if (indexes.Count > 0)
+        {
+            EliminarItem(indexes[indexes.Count - 1]);
+        }
     }
 
     private void AñadirItemEnSlotDisponible(InventarioItem item, int cantidad)
@@ -108,6 +136,7 @@ public class Inventario : Singleton<Inventario>
         {
             InventarioUI.Instance.DibujarItemEnInventario(itemsInventario[index], itemsInventario[index].Cantidad,index);
         }
+        GuardarInventario();
     }
 
     public void MoverItem(int indexInicial, int indexFinal)
@@ -125,7 +154,8 @@ public class Inventario : Singleton<Inventario>
         //Borramos item de slot inicial
         itemsInventario[indexInicial] = null;
         InventarioUI.Instance.DibujarItemEnInventario(null, 0, indexInicial);
-            
+
+        GuardarInventario();
     }
     private void UsarItem(int index)
     {
@@ -166,6 +196,39 @@ public class Inventario : Singleton<Inventario>
         }
         itemsInventario[index].RemoverItem();
     }
+
+    #region Guardado
+    private InventarioData dataGuardado;
+    private void GuardarInventario()
+    {
+        dataGuardado= new InventarioData();
+        dataGuardado.ItemsDatos = new string[numeroDeSlots];
+        dataGuardado.ItemsCantidad = new int[numeroDeSlots];
+        
+        for (int i = 0; i < numeroDeSlots; i++)
+        {
+            if (itemsInventario[i] == null || string.IsNullOrEmpty(itemsInventario[i].ID))
+            {
+                dataGuardado.ItemsDatos[i] = null;
+                dataGuardado.ItemsCantidad[i] = 0;
+            }
+            else
+            {
+                dataGuardado.ItemsDatos[i] = itemsInventario[i].ID;
+                dataGuardado.ItemsCantidad[i] = itemsInventario[i].Cantidad;
+            }
+        }
+        SaveGame.Save(INVENTARIO_KEY, dataGuardado);
+
+
+    }
+    private void CargarInventario()
+    {
+
+    }
+
+    #endregion
+
     #region Eventos
 
     private void SlotInteraccionRespuesta(TipoDeInteraccion tipo , int index)

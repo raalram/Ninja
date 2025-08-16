@@ -21,6 +21,7 @@ public class InspectorQuestDescripcion : QuestDescripcion
             return;
         }
 
+        QuestporCompletar.QuestAceptado = true;
         QuestManager.Instance.AñadirQuest(QuestporCompletar);
         gameObject.SetActive(false);
     }
